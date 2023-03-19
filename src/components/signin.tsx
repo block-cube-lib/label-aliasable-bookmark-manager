@@ -1,14 +1,18 @@
-import { useState, useEffect } from 'react';
-import { EmailAuthProvider } from 'firebase/auth';
-import { app, auth } from '../infrastructure/firebase';
-import { Helmet, HelmetProvider } from 'react-helmet-async';
-import firebase from 'firebase/compat/app';
-import * as firebaseui from 'firebaseui';
+import '../entities/user';
 import 'firebaseui/dist/firebaseui.css';
+import * as firebaseui from 'firebaseui';
+import firebase from 'firebase/compat/app';
+import { auth } from '../infrastructure/firebase';
 
 const uiConfig: firebaseui.auth.Config = {
   signInSuccessUrl: './signedin',
-  signInOptions: [firebase.auth.EmailAuthProvider.PROVIDER_ID],
+  signInOptions: [
+    {
+      provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
+      requireDisplayName: true,
+      forceSameDevice: false,
+    },
+  ],
   tosUrl: './tos',
   privacyPolicyUrl: () => {
     window.location.assign('./privacy-policy');
@@ -26,10 +30,10 @@ const getSignInUI = () => {
 const SignIn = () => {
   const ui = getSignInUI();
   return (
-    <div>
+    <>
       <div id="firebaseui-auth-container" />
       {ui.start('#firebaseui-auth-container', uiConfig)}
-    </div>
+    </>
   );
 };
 
